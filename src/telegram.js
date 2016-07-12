@@ -89,7 +89,12 @@ TelegramBot.prototype._processUpdate = function (update) {
         var result = reg.regexp.exec(message.text);
         if (result) {
           debug('Matches', reg.regexp);
-          reg.callback(message, result);
+          if (reg.type === 'reply') {
+              if (reg.userId === message.from.id) {
+                reg.callback(message, result);
+              }
+          } else
+            reg.callback(message, result);
         }
       });
     }
@@ -567,7 +572,7 @@ TelegramBot.prototype.onText = function (regexp, callback) {
  * Register a reply to wait for a message response.
  * @param  {Number|String}   chatId       The chat id where the message cames from.
  * @param  {Number|String}   messageId    The message id to be replied.
- * @param  {Function} callback     Callback will be called with the reply 
+ * @param  {Function} callback     Callback will be called with the reply
  * message.
  */
 TelegramBot.prototype.onReplyToMessage = function (chatId, messageId, callback) {
